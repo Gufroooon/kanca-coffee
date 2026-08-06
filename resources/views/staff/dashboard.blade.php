@@ -43,20 +43,35 @@
                     </div>
                 </div>
 
+                @if($errors->any())
+                    <div class="rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-xs text-rose-700">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
                 <!-- Clock In / Clock Out Forms -->
                 @if(!$todayAttendance)
-                    <form action="{{ route('staff.attendance.clock-in') }}" method="POST" class="space-y-3">
+                    <form action="{{ route('staff.attendance.clock-in') }}" method="POST" class="space-y-3" @submit.prevent="submitAttendance($event)">
                         @csrf
+                        <input type="hidden" name="latitude" x-model="latitude">
+                        <input type="hidden" name="longitude" x-model="longitude">
+                        <input type="hidden" name="accuracy" x-model="accuracy">
                         <input type="text" name="notes" placeholder="Optional Clock In Note (e.g. Traffic info)..." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white">
-                        <button type="submit" class="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm transition-all shadow-xl shadow-emerald-600/20">
+                        <button type="button" disabled class="w-full py-3 rounded-2xl bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-gray-500 font-extrabold text-xs cursor-not-allowed">
+                            CLOCK OUT AVAILABLE AFTER CLOCK IN
+                        </button>
+                        <button type="submit" :disabled="isLocating" class="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-extrabold text-sm transition-all shadow-xl shadow-emerald-600/20">
                             🟢 CLOCK IN NOW
                         </button>
                     </form>
                 @elseif(!$todayAttendance->clock_out)
-                    <form action="{{ route('staff.attendance.clock-out') }}" method="POST" class="space-y-3">
+                    <form action="{{ route('staff.attendance.clock-out') }}" method="POST" class="space-y-3" @submit.prevent="submitAttendance($event)">
                         @csrf
+                        <input type="hidden" name="latitude" x-model="latitude">
+                        <input type="hidden" name="longitude" x-model="longitude">
+                        <input type="hidden" name="accuracy" x-model="accuracy">
                         <input type="text" name="notes" placeholder="Optional Clock Out Note..." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white">
-                        <button type="submit" class="w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm transition-all shadow-xl shadow-rose-600/20">
+                        <button type="submit" :disabled="isLocating" class="w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-extrabold text-sm transition-all shadow-xl shadow-rose-600/20">
                             🔴 CLOCK OUT NOW
                         </button>
                     </form>
@@ -76,9 +91,24 @@
                     <li class="flex items-center gap-2">✓ <span>Location coordinates automatically validated upon submit.</span></li>
                 </ul>
 
-                <div class="pt-4 border-t border-gray-100 dark:border-zinc-800 text-xs text-gray-400">
-                    <strong>Current GPS Location:</strong> Kanca Store Main Bar (-6.2297, 106.8080)
+                <div class="pt-4 border-t border-gray-100 dark:border-zinc-800 text-xs text-gray-500 dark:text-gray-400 space-y-2">
+                    <p><strong>GPS Status:</strong> <span x-text="gpsStatus"></span></p>
+                    <p x-show="gpsError" x-text="gpsError" class="text-rose-500 font-medium"></p>
+                    <p x-show="latitude"><strong>Coordinates:</strong> <span x-text="coordinateLabel"></span></p>
                 </div>
+                <iframe x-show="latitude" x-bind:src="mapUrl" class="w-full h-48 rounded-2xl border border-gray-200 dark:border-zinc-700" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Current employee GPS location"></iframe>
+                @if($todayAttendance && $todayAttendance->clock_in_latitude && $todayAttendance->clock_in_longitude)
+                    <div class="pt-2">
+                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">Saved Clock-In Location</p>
+                        <iframe src="https://www.google.com/maps?q={{ $todayAttendance->clock_in_latitude }},{{ $todayAttendance->clock_in_longitude }}&z=16&output=embed" class="w-full h-48 rounded-2xl border border-gray-200 dark:border-zinc-700" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Saved clock-in location"></iframe>
+                    </div>
+                @endif
+                @if($todayAttendance && $todayAttendance->clock_out_latitude && $todayAttendance->clock_out_longitude)
+                    <div class="pt-2">
+                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">Saved Clock-Out Location</p>
+                        <iframe src="https://www.google.com/maps?q={{ $todayAttendance->clock_out_latitude }},{{ $todayAttendance->clock_out_longitude }}&z=16&output=embed" class="w-full h-48 rounded-2xl border border-gray-200 dark:border-zinc-700" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Saved clock-out location"></iframe>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -93,6 +123,8 @@
                             <th class="p-3">Date</th>
                             <th class="p-3">Clock In</th>
                             <th class="p-3">Clock Out</th>
+                            <th class="p-3">Clock-In Coordinates</th>
+                            <th class="p-3">Clock-Out Coordinates</th>
                             <th class="p-3">Status</th>
                             <th class="p-3">Notes</th>
                         </tr>
@@ -103,6 +135,24 @@
                                 <td class="p-3 font-bold">{{ $log->date ? $log->date->format('d M Y') : '' }}</td>
                                 <td class="p-3 font-semibold text-emerald-600">{{ $log->clock_in ?? '-' }}</td>
                                 <td class="p-3 font-semibold text-rose-600">{{ $log->clock_out ?? '-' }}</td>
+                                <td class="p-3 text-gray-500 whitespace-nowrap">
+                                    @if($log->clock_in_latitude !== null && $log->clock_in_longitude !== null)
+                                        <a href="https://www.google.com/maps?q={{ $log->clock_in_latitude }},{{ $log->clock_in_longitude }}" target="_blank" rel="noopener" class="text-kanca-teal hover:underline">
+                                            {{ number_format($log->clock_in_latitude, 6) }}, {{ number_format($log->clock_in_longitude, 6) }}
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="p-3 text-gray-500 whitespace-nowrap">
+                                    @if($log->clock_out_latitude !== null && $log->clock_out_longitude !== null)
+                                        <a href="https://www.google.com/maps?q={{ $log->clock_out_latitude }},{{ $log->clock_out_longitude }}" target="_blank" rel="noopener" class="text-kanca-orange hover:underline">
+                                            {{ number_format($log->clock_out_latitude, 6) }}, {{ number_format($log->clock_out_longitude, 6) }}
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="p-3">
                                     <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase {{ $log->status === 'late' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800' }}">
                                         {{ $log->status }}
@@ -112,7 +162,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-4 text-center text-gray-400">No shift records for this month.</td>
+                                <td colspan="7" class="p-4 text-center text-gray-400">No shift records for this month.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -126,6 +176,50 @@
             return {
                 currentTime: '',
                 currentDate: '',
+                latitude: '',
+                longitude: '',
+                accuracy: '',
+                isLocating: false,
+                gpsError: '',
+                get gpsStatus() {
+                    return this.isLocating ? 'Requesting location…' : (this.latitude ? 'Location ready' : 'Location required before clocking in/out');
+                },
+                get coordinateLabel() {
+                    return `${Number(this.latitude).toFixed(6)}, ${Number(this.longitude).toFixed(6)} (±${Math.round(this.accuracy)} m)`;
+                },
+                get mapUrl() {
+                    return this.latitude ? `https://www.google.com/maps?q=${this.latitude},${this.longitude}&z=16&output=embed` : '';
+                },
+                submitAttendance(event) {
+                    this.gpsError = '';
+                    if (!navigator.geolocation) {
+                        this.gpsError = 'This browser does not support GPS location.';
+                        return;
+                    }
+
+                    this.isLocating = true;
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            this.latitude = position.coords.latitude;
+                            this.longitude = position.coords.longitude;
+                            this.accuracy = position.coords.accuracy;
+                            // Set native form inputs directly: Alpine updates x-model on the next render cycle,
+                            // while this form must be submitted immediately after the GPS callback.
+                            event.target.querySelector('[name="latitude"]').value = position.coords.latitude;
+                            event.target.querySelector('[name="longitude"]').value = position.coords.longitude;
+                            event.target.querySelector('[name="accuracy"]').value = position.coords.accuracy;
+                            this.isLocating = false;
+                            event.target.submit();
+                        },
+                        (error) => {
+                            this.isLocating = false;
+                            this.gpsError = error.code === 1
+                                ? 'GPS permission was denied. Allow location access, then try again.'
+                                : 'Unable to get an accurate GPS location. Move to an open area and try again.';
+                        },
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                    );
+                },
                 init() {
                     const update = () => {
                         const now = new Date();

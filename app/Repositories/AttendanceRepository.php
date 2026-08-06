@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Attendance;
-use App\Models\User;
 use Carbon\Carbon;
 
 class AttendanceRepository
@@ -12,6 +11,7 @@ class AttendanceRepository
     {
         return Attendance::where('user_id', $userId)
             ->where('date', Carbon::today()->toDateString())
+            ->latest('id')
             ->first();
     }
 

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class StaffAttendanceController extends Controller
 {
     protected $attendanceRepo;
+
     protected $attendanceService;
 
     public function __construct(AttendanceRepository $attendanceRepo, AttendanceService $attendanceService)
@@ -32,12 +33,14 @@ class StaffAttendanceController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'location' => 'nullable|string',
-            'notes' => 'nullable|string',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+            'accuracy' => 'nullable|numeric|min:0|max:10000',
+            'notes' => 'nullable|string|max:2000',
         ]);
 
         try {
-            $this->attendanceService->clockIn($user, $validated['location'] ?? null, $validated['notes'] ?? null);
+            $this->attendanceService->clockIn($user, (float) $validated['latitude'], (float) $validated['longitude'], isset($validated['accuracy']) ? (float) $validated['accuracy'] : null, $validated['notes'] ?? null);
 
             return back()->with('success', 'Successfully Clocked In! Work safely today.');
         } catch (\Exception $e) {
@@ -50,12 +53,14 @@ class StaffAttendanceController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'location' => 'nullable|string',
-            'notes' => 'nullable|string',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+            'accuracy' => 'nullable|numeric|min:0|max:10000',
+            'notes' => 'nullable|string|max:2000',
         ]);
 
         try {
-            $this->attendanceService->clockOut($user, $validated['location'] ?? null, $validated['notes'] ?? null);
+            $this->attendanceService->clockOut($user, (float) $validated['latitude'], (float) $validated['longitude'], isset($validated['accuracy']) ? (float) $validated['accuracy'] : null, $validated['notes'] ?? null);
 
             return back()->with('success', 'Successfully Clocked Out! Thank you for your hard work today.');
         } catch (\Exception $e) {

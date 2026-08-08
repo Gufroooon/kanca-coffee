@@ -7,8 +7,8 @@
 :root {
   --color-primary: #EB5724;
   --color-primary-hover: #d44716;
-  --color-secondary: #28A096;
-  --color-secondary-hover: #1e837a;
+  --color-secondary: #F2A24B;
+  --color-secondary-hover: #e08c2e;
   --color-bg-light: #FFF8F5;
   --color-dark: #232323;
 }
@@ -66,13 +66,13 @@ body {
 
 /* Gradient text */
 .text-gradient-primary {
-  background: linear-gradient(135deg, #EB5724 0%, #28A096 100%);
+  background: linear-gradient(135deg, #EB5724 0%, #F2A24B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .bg-gradient-brand {
-  background: linear-gradient(135deg, #EB5724 0%, #28A096 100%);
+  background: linear-gradient(135deg, #EB5724 0%, #F2A24B 100%);
 }
 
 .bg-gradient-warm {
@@ -91,5 +91,5 @@ body {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #28A096;
+  background: #F2A24B;
 }

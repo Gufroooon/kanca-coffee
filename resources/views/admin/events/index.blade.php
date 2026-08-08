@@ -30,7 +30,7 @@
                                     <img src="{{ $ev->poster }}" class="w-12 h-12 rounded-xl object-cover" />
                                     <div>
                                         <h4 class="font-bold text-sm text-gray-900 dark:text-white">{{ $ev->title }}</h4>
-                                        <span class="text-[10px] text-kanca-orange font-bold">📍 {{ $ev->location }}</span>
+<span class="text-[10px] text-kanca-orange font-bold inline-flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> {{ $ev->location }}</span>
                                     </div>
                                 </td>
                                 <td class="p-4 font-bold">{{ $ev->date ? $ev->date->format('d M Y') : '' }} <span class="block text-gray-400 font-normal">{{ $ev->start_time }} WIB</span></td>

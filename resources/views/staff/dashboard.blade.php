@@ -4,10 +4,10 @@
         <div class="glass-card dark:glass-dark rounded-3xl p-6 sm:p-8 border border-gray-200 dark:border-zinc-800 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="space-y-1 text-center md:text-left">
                 <span class="px-3 py-1 rounded-full bg-kanca-teal/10 text-kanca-teal font-extrabold text-[10px] uppercase tracking-wider">
-                    Assigned Shift: {{ $user->shift }}
+                    {{ __('Shift Ditetapkan') }}: {{ $user->shift }}
                 </span>
-                <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">Welcome back, {{ $user->name }}</h2>
-                <p class="text-xs text-gray-500">Barista & Store Operations Station</p>
+                <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-1">{{ __('Selamat datang kembali,') }} {{ $user->name }}</h2>
+                <p class="text-xs text-gray-500">{{ __('Stasiun Operasional Barista & Toko') }}</p>
             </div>
 
             <!-- Digital Clock Display -->
@@ -22,23 +22,23 @@
             <!-- Today Status & Clock Buttons -->
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-200 dark:border-zinc-800 shadow-lg space-y-6">
                 <div class="flex justify-between items-center pb-4 border-b border-gray-100 dark:border-zinc-800">
-                    <h3 class="font-bold text-base text-gray-900 dark:text-white">Today's Shift Attendance</h3>
+                    <h3 class="font-bold text-base text-gray-900 dark:text-white">{{ __('Absensi Shift Hari Ini') }}</h3>
                     @if($todayAttendance)
                         <span class="px-3 py-1 rounded-full text-xs font-bold uppercase {{ $todayAttendance->status === 'late' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800' }}">
-                            Status: {{ $todayAttendance->status }}
+                            {{ __('Status') }}: {{ $todayAttendance->status }}
                         </span>
                     @else
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 uppercase">Not Clocked In Yet</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 uppercase">{{ __('Belum Absen Masuk') }}</span>
                     @endif
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 text-center">
                     <div class="p-4 rounded-2xl bg-gray-50 dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase block">Clock In</span>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase block">{{ __('Absen Masuk') }}</span>
                         <span class="text-xl font-extrabold text-emerald-600">{{ $todayAttendance ? ($todayAttendance->clock_in ?? '-') : '-' }}</span>
                     </div>
                     <div class="p-4 rounded-2xl bg-gray-50 dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase block">Clock Out</span>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase block">{{ __('Absen Keluar') }}</span>
                         <span class="text-xl font-extrabold text-rose-600">{{ $todayAttendance ? ($todayAttendance->clock_out ?? '-') : '-' }}</span>
                     </div>
                 </div>
@@ -56,12 +56,12 @@
                         <input type="hidden" name="latitude" x-model="latitude">
                         <input type="hidden" name="longitude" x-model="longitude">
                         <input type="hidden" name="accuracy" x-model="accuracy">
-                        <input type="text" name="notes" placeholder="Optional Clock In Note (e.g. Traffic info)..." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white">
+                        <input type="text" name="notes" placeholder="{{ __('Catatan Absen Masuk Opsional (mis. Info lalu lintas)...') }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white">
                         <button type="button" disabled class="w-full py-3 rounded-2xl bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-gray-500 font-extrabold text-xs cursor-not-allowed">
-                            CLOCK OUT AVAILABLE AFTER CLOCK IN
+                            {{ __('ABSEN KELUAR TERSEDIA SETELAH ABSEN MASUK') }}
                         </button>
                         <button type="submit" :disabled="isLocating" class="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-extrabold text-sm transition-all shadow-xl shadow-emerald-600/20">
-                            🟢 CLOCK IN NOW
+                            <i data-lucide="log-in" class="w-5 h-5 inline-block"></i> {{ __('ABSEN MASUK SEKARANG') }}
                         </button>
                     </form>
                 @elseif(!$todayAttendance->clock_out)
@@ -70,42 +70,42 @@
                         <input type="hidden" name="latitude" x-model="latitude">
                         <input type="hidden" name="longitude" x-model="longitude">
                         <input type="hidden" name="accuracy" x-model="accuracy">
-                        <input type="text" name="notes" placeholder="Optional Clock Out Note..." class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white">
+                        <input type="text" name="notes" placeholder="{{ __('Catatan Absen Keluar Opsional...') }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white">
                         <button type="submit" :disabled="isLocating" class="w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white font-extrabold text-sm transition-all shadow-xl shadow-rose-600/20">
-                            🔴 CLOCK OUT NOW
+                            <i data-lucide="log-out" class="w-5 h-5 inline-block"></i> {{ __('ABSEN KELUAR SEKARANG') }}
                         </button>
                     </form>
                 @else
-                    <div class="p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-xs font-bold text-center">
-                        ✓ Shift Completed For Today! Have a great rest.
+                    <div class="p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-xs font-bold text-center inline-flex items-center justify-center gap-2 w-full">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i> {{ __('Shift Hari Ini Selesai! Istirahat yang nyenyak.') }}
                     </div>
                 @endif
             </div>
 
             <!-- Quick Shift Guidelines & Location Tracker -->
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-200 dark:border-zinc-800 shadow-lg space-y-4">
-                <h3 class="font-bold text-base text-gray-900 dark:text-white">Barista Operational Guidelines</h3>
+                <h3 class="font-bold text-base text-gray-900 dark:text-white">{{ __('Panduan Operasional Barista') }}</h3>
                 <ul class="space-y-2 text-xs text-gray-600 dark:text-gray-400">
-                    <li class="flex items-center gap-2">✓ <span>Clock in at least 10 minutes prior to espresso bar opening.</span></li>
-                    <li class="flex items-center gap-2">✓ <span>Verify bean grinder calibration & water pressure.</span></li>
-                    <li class="flex items-center gap-2">✓ <span>Location coordinates automatically validated upon submit.</span></li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> <span>{{ __('Absen masuk setidaknya 10 menit sebelum espresso bar buka.') }}</span></li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> <span>{{ __('Verifikasi kalibrasi penggiling biji kopi & tekanan air.') }}</span></li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> <span>{{ __('Koordinat lokasi otomatis divalidasi saat dikirim.') }}</span></li>
                 </ul>
 
                 <div class="pt-4 border-t border-gray-100 dark:border-zinc-800 text-xs text-gray-500 dark:text-gray-400 space-y-2">
                     <p><strong>GPS Status:</strong> <span x-text="gpsStatus"></span></p>
                     <p x-show="gpsError" x-text="gpsError" class="text-rose-500 font-medium"></p>
-                    <p x-show="latitude"><strong>Coordinates:</strong> <span x-text="coordinateLabel"></span></p>
+                    <p x-show="latitude"><strong>{{ __('Koordinat') }}:</strong> <span x-text="coordinateLabel"></span></p>
                 </div>
                 <iframe x-show="latitude" x-bind:src="mapUrl" class="w-full h-48 rounded-2xl border border-gray-200 dark:border-zinc-700" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Current employee GPS location"></iframe>
                 @if($todayAttendance && $todayAttendance->clock_in_latitude && $todayAttendance->clock_in_longitude)
                     <div class="pt-2">
-                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">Saved Clock-In Location</p>
+                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">{{ __('Lokasi Absen Masuk Tersimpan') }}</p>
                         <iframe src="https://www.google.com/maps?q={{ $todayAttendance->clock_in_latitude }},{{ $todayAttendance->clock_in_longitude }}&z=16&output=embed" class="w-full h-48 rounded-2xl border border-gray-200 dark:border-zinc-700" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Saved clock-in location"></iframe>
                     </div>
                 @endif
                 @if($todayAttendance && $todayAttendance->clock_out_latitude && $todayAttendance->clock_out_longitude)
                     <div class="pt-2">
-                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">Saved Clock-Out Location</p>
+                        <p class="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">{{ __('Lokasi Absen Keluar Tersimpan') }}</p>
                         <iframe src="https://www.google.com/maps?q={{ $todayAttendance->clock_out_latitude }},{{ $todayAttendance->clock_out_longitude }}&z=16&output=embed" class="w-full h-48 rounded-2xl border border-gray-200 dark:border-zinc-700" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Saved clock-out location"></iframe>
                     </div>
                 @endif
@@ -114,19 +114,19 @@
 
         <!-- Monthly Attendance History -->
         <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-200 dark:border-zinc-800 shadow-lg space-y-4">
-            <h3 class="font-bold text-base text-gray-900 dark:text-white">Monthly Shift Attendance Logs</h3>
+            <h3 class="font-bold text-base text-gray-900 dark:text-white">{{ __('Log Absensi Shift Bulanan') }}</h3>
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50 dark:bg-zinc-800 text-gray-500 uppercase font-bold">
                         <tr>
-                            <th class="p-3">Date</th>
-                            <th class="p-3">Clock In</th>
-                            <th class="p-3">Clock Out</th>
-                            <th class="p-3">Clock-In Coordinates</th>
-                            <th class="p-3">Clock-Out Coordinates</th>
-                            <th class="p-3">Status</th>
-                            <th class="p-3">Notes</th>
+                            <th class="p-3">{{ __('Tanggal') }}</th>
+                            <th class="p-3">{{ __('Absen Masuk') }}</th>
+                            <th class="p-3">{{ __('Absen Keluar') }}</th>
+                            <th class="p-3">{{ __('Koordinat Absen Masuk') }}</th>
+                            <th class="p-3">{{ __('Koordinat Absen Keluar') }}</th>
+                            <th class="p-3">{{ __('Status') }}</th>
+                            <th class="p-3">{{ __('Catatan') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-zinc-800">
@@ -162,7 +162,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="p-4 text-center text-gray-400">No shift records for this month.</td>
+                                <td colspan="7" class="p-4 text-center text-gray-400">{{ __('Tidak ada catatan shift untuk bulan ini.') }}</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -182,7 +182,7 @@
                 isLocating: false,
                 gpsError: '',
                 get gpsStatus() {
-                    return this.isLocating ? 'Requesting location…' : (this.latitude ? 'Location ready' : 'Location required before clocking in/out');
+                    return this.isLocating ? '{{ __('Meminta lokasi…') }}' : (this.latitude ? '{{ __('Lokasi siap') }}' : '{{ __('Lokasi diperlukan sebelum absen masuk/keluar') }}');
                 },
                 get coordinateLabel() {
                     return `${Number(this.latitude).toFixed(6)}, ${Number(this.longitude).toFixed(6)} (±${Math.round(this.accuracy)} m)`;
@@ -193,7 +193,7 @@
                 submitAttendance(event) {
                     this.gpsError = '';
                     if (!navigator.geolocation) {
-                        this.gpsError = 'This browser does not support GPS location.';
+                        this.gpsError = '{{ __('Browser ini tidak mendukung lokasi GPS.') }}';
                         return;
                     }
 
@@ -214,8 +214,8 @@
                         (error) => {
                             this.isLocating = false;
                             this.gpsError = error.code === 1
-                                ? 'GPS permission was denied. Allow location access, then try again.'
-                                : 'Unable to get an accurate GPS location. Move to an open area and try again.';
+                                ? '{{ __('Izin GPS ditolak. Izinkan akses lokasi, lalu coba lagi.') }}'
+                                : '{{ __('Tidak dapat memperoleh lokasi GPS yang akurat. Pindah ke area terbuka dan coba lagi.') }}';
                         },
                         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
                     );

@@ -16,12 +16,13 @@ export default {
             fontFamily: {
                 sans: ['"Plus Jakarta Sans"', 'Poppins', ...defaultTheme.fontFamily.sans],
             },
-            colors: {
+colors: {
                 kanca: {
                     orange: '#EB5724',
                     orangeHover: '#d44716',
-                    teal: '#28A096',
-                    tealHover: '#1e837a',
+                    amber: '#F2A24B',
+                    amberHover: '#e08c2e',
+                    cream: '#FDF3E7',
                     bg: '#FFF8F5',
                     dark: '#232323',
                 }

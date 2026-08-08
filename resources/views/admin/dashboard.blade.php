@@ -4,7 +4,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Metric 1: Total Menus -->
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-kanca-orange/10 text-kanca-orange flex items-center justify-center text-2xl font-bold">☕</div>
+<div class="w-14 h-14 rounded-2xl bg-kanca-orange/10 text-kanca-orange flex items-center justify-center"><i data-lucide="coffee" class="w-7 h-7"></i></div>
                 <div>
                     <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Active Menus</span>
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">{{ $totalMenus }}</h3>
@@ -13,7 +13,7 @@
 
             <!-- Metric 2: Events -->
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-kanca-teal/10 text-kanca-teal flex items-center justify-center text-2xl font-bold">📅</div>
+<div class="w-14 h-14 rounded-2xl bg-kanca-teal/10 text-kanca-teal flex items-center justify-center"><i data-lucide="calendar" class="w-7 h-7"></i></div>
                 <div>
                     <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Community Events</span>
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">{{ $totalEvents }}</h3>
@@ -22,7 +22,7 @@
 
             <!-- Metric 3: Today's Staff Attendance -->
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl font-bold">⏰</div>
+<div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i data-lucide="clock" class="w-7 h-7"></i></div>
                 <div>
                     <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Today Attendances</span>
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">{{ $todayAttendances }}</h3>
@@ -31,7 +31,7 @@
 
             <!-- Metric 4: Registered Users -->
             <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-2xl font-bold">👥</div>
+<div class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center"><i data-lucide="users" class="w-7 h-7"></i></div>
                 <div>
                     <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Accounts</span>
                     <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white">{{ $totalUsers }}</h3>
@@ -62,17 +62,17 @@
                 </div>
 
                 <div class="space-y-3">
-                    <a href="{{ route('admin.menus.create') }}" class="w-full py-3 px-4 rounded-2xl bg-kanca-orange text-white font-bold text-xs hover:bg-kanca-orangeHover transition-all flex items-center justify-between">
+<a href="{{ route('admin.menus.create') }}" class="w-full py-3 px-4 rounded-2xl bg-kanca-orange text-white font-bold text-xs hover:bg-kanca-orangeHover transition-all flex items-center justify-between">
                         <span>+ Create New Menu Item</span>
-                        <span>→</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
                     <a href="{{ route('admin.events.create') }}" class="w-full py-3 px-4 rounded-2xl bg-kanca-teal text-white font-bold text-xs hover:bg-kanca-tealHover transition-all flex items-center justify-between">
                         <span>+ Host Community Event</span>
-                        <span>→</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
                     <a href="{{ route('admin.attendances.export.pdf') }}" class="w-full py-3 px-4 rounded-2xl bg-zinc-900 text-white font-bold text-xs hover:bg-black transition-all flex items-center justify-between">
-                        <span>📄 Export Attendance PDF</span>
-                        <span>↓</span>
+                        <span class="inline-flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i> Export Attendance PDF</span>
+                        <i data-lucide="download" class="w-4 h-4"></i>
                     </a>
                 </div>
             </div>

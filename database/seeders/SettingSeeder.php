@@ -19,8 +19,8 @@ class SettingSeeder extends Seeder
             ['key' => 'weekend_hours', 'value' => '07:00 - 24:00 WIB', 'group' => 'hours'],
             ['key' => 'instagram_url', 'value' => 'https://instagram.com/kancacoffee', 'group' => 'social'],
             ['key' => 'gofood_url', 'value' => 'https://gofood.link/kancacoffee', 'group' => 'social'],
-            ['key' => 'shopeefood_url', 'value' => 'https://shopeefood.link/kancacoffee', 'group' => 'social'],
-            ['key' => 'announcement_banner', 'value' => '☕ Free Speciality Cookie for every Signature Aren Latte on Weekdays 14:00 - 17:00!', 'group' => 'general'],
+['key' => 'shopeefood_url', 'value' => 'https://shopeefood.link/kancacoffee', 'group' => 'social'],
+            ['key' => 'announcement_banner', 'value' => 'Free Speciality Cookie for every Signature Aren Latte on Weekdays 14:00 - 17:00!', 'group' => 'general'],
         ];
 
         foreach ($settings as $s) {

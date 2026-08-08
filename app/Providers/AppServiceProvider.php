@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Session locale is applied via the SetLocale middleware (runs after session starts).
     }
 }

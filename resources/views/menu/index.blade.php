@@ -3,31 +3,31 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="text-center max-w-2xl mx-auto space-y-3 mb-10">
-                <span class="px-4 py-1.5 rounded-full bg-kanca-orange/10 text-kanca-orange font-bold text-xs uppercase tracking-widest">Kanca Artisanal Menu</span>
-                <h1 class="text-4xl font-extrabold text-kanca-dark dark:text-white">Discover Our House Brews & Kitchen</h1>
-                <p class="text-xs text-gray-500">Every cup is freshly ground and handcrafted to order.</p>
+                <span class="px-4 py-1.5 rounded-full bg-kanca-orange/10 text-kanca-orange font-bold text-xs uppercase tracking-widest">{{ __('Menu Artisanal Kanca') }}</span>
+                <h1 class="text-4xl font-extrabold text-kanca-dark dark:text-white">{{ __('Temukan Racikan Rumah & Dapur Kami') }}</h1>
+                <p class="text-xs text-gray-500">{{ __('Setiap cangkir digiling segar dan dibuat dengan tangan sesuai pesanan.') }}</p>
             </div>
 
             <!-- Search & Controls Bar -->
             <div class="glass-card dark:glass-dark rounded-3xl p-6 mb-10 border border-white/80 dark:border-zinc-800 shadow-xl space-y-6">
                 <form action="{{ route('menu.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                     <div class="md:col-span-6 relative">
-                        <input type="text" name="search" value="{{ $search }}" placeholder="Search Aren Latte, Croissant, Cold Brew..." class="w-full pl-12 pr-4 py-3 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs focus:outline-none focus:border-kanca-orange">
+                        <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Cari Aren Latte, Croissant, Cold Brew...') }}" class="w-full pl-12 pr-4 py-3 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs focus:outline-none focus:border-kanca-orange">
                         <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-4 top-3.5"></i>
                     </div>
 
                     <div class="md:col-span-4">
                         <select name="sort" onchange="this.form.submit()" class="w-full px-4 py-3 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs focus:outline-none focus:border-kanca-orange">
-                            <option value="">Sort By: Default Bestsellers</option>
-                            <option value="price_low" {{ $sort === 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
-                            <option value="price_high" {{ $sort === 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
-                            <option value="rating" {{ $sort === 'rating' ? 'selected' : '' }}>Rating: Highest Rated</option>
+                            <option value="">{{ __('Urutkan: Terlaris Bawaan') }}</option>
+                            <option value="price_low" {{ $sort === 'price_low' ? 'selected' : '' }}>{{ __('Harga: Terendah ke Tertinggi') }}</option>
+                            <option value="price_high" {{ $sort === 'price_high' ? 'selected' : '' }}>{{ __('Harga: Tertinggi ke Terendah') }}</option>
+                            <option value="rating" {{ $sort === 'rating' ? 'selected' : '' }}>{{ __('Rating: Rating Tertinggi') }}</option>
                         </select>
                     </div>
 
                     <div class="md:col-span-2">
                         <button type="submit" class="w-full py-3 rounded-2xl bg-kanca-orange text-white font-bold text-xs hover:bg-kanca-orangeHover transition-colors shadow-md">
-                            Apply Filter
+                            {{ __('Terapkan Filter') }}
                         </button>
                     </div>
                 </form>
@@ -35,11 +35,11 @@
                 <!-- Category Tabs -->
                 <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-t border-gray-100 dark:border-zinc-800 pt-4">
                     <a href="{{ route('menu.index', ['category' => 'all', 'search' => $search, 'sort' => $sort]) }}" class="px-5 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all {{ $categorySlug === 'all' ? 'bg-kanca-dark text-white shadow-md' : 'bg-white dark:bg-zinc-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100' }}">
-                        ✨ All Items
+<i data-lucide="sparkles" class="w-4 h-4 inline-block"></i> {{ __('Semua Item') }}
                     </a>
                     @foreach($categories as $cat)
                         <a href="{{ route('menu.index', ['category' => $cat->slug, 'search' => $search, 'sort' => $sort]) }}" class="px-5 py-2.5 rounded-full text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 {{ $categorySlug === $cat->slug ? 'bg-kanca-orange text-white shadow-md' : 'bg-white dark:bg-zinc-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100' }}">
-                            <span>{{ $cat->icon }}</span>
+<i data-lucide="{{ $cat->slug == 'coffee' ? 'coffee' : ($cat->slug == 'non-coffee' ? 'milk' : ($cat->slug == 'tea' ? 'cup-soda' : ($cat->slug == 'meals' ? 'utensils-crossed' : ($cat->slug == 'pastry' ? 'croissant' : 'cake')))) }}" class="w-4 h-4"></i>
                             <span>{{ $cat->name }}</span>
                         </a>
                     @endforeach
@@ -53,10 +53,10 @@
                         <!-- Badges -->
                         <div class="absolute top-6 left-6 z-10 flex flex-col gap-1">
                             @if($menu->is_bestseller)
-                                <span class="px-2.5 py-0.5 rounded-full bg-kanca-orange text-white text-[9px] font-extrabold uppercase shadow-sm">Best Seller</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-kanca-orange text-white text-[9px] font-extrabold uppercase shadow-sm">{{ __('Best Seller') }}</span>
                             @endif
                             @if($menu->is_new)
-                                <span class="px-2.5 py-0.5 rounded-full bg-kanca-teal text-white text-[9px] font-extrabold uppercase shadow-sm">New</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-kanca-teal text-white text-[9px] font-extrabold uppercase shadow-sm">{{ __('Baru') }}</span>
                             @endif
                         </div>
 
@@ -66,15 +66,15 @@
                                 <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 
                                 <!-- Favorite Heart Button -->
-                                <button @click.prevent="toggleFavorite({{ $menu->id }})" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md flex items-center justify-center text-rose-500 hover:scale-110 transition-transform shadow-md">
-                                    ♥
+<button @click.prevent="toggleFavorite({{ $menu->id }})" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md flex items-center justify-center text-rose-500 hover:scale-110 transition-transform shadow-md" title="{{ __('Tambah ke Favorit') }}">
+                                    <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
                                 </button>
                             </div>
 
                             <div class="space-y-1.5">
                                 <div class="flex justify-between items-center text-[10px]">
                                     <span class="font-bold text-kanca-teal uppercase">{{ $menu->category->name }}</span>
-                                    <span class="font-bold text-amber-500">★ {{ number_format($menu->rating, 2) }}</span>
+<span class="font-bold text-amber-500 inline-flex items-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i> {{ number_format($menu->rating, 2) }}</span>
                                 </div>
                                 <h3 class="font-bold text-base text-kanca-dark dark:text-white group-hover:text-kanca-orange transition-colors">
                                     {{ $menu->name }}
@@ -90,13 +90,13 @@
                                 IDR {{ number_format($menu->price, 0, ',', '.') }}
                             </span>
                             <button @click="openModal({{ json_encode($menu) }})" class="px-3 py-1.5 rounded-xl bg-kanca-dark text-white text-[11px] font-bold hover:bg-black transition-colors">
-                                Details
+                                {{ __('Detail') }}
                             </button>
                         </div>
                     </div>
                 @empty
                     <div class="col-span-4 text-center py-16 text-gray-400">
-                        No menu items found for the selected category or search.
+                        {{ __('Tidak ada item menu yang ditemukan untuk kategori atau pencarian yang dipilih.') }}
                     </div>
                 @endforelse
             </div>
@@ -110,7 +110,7 @@
         <!-- Menu Item Quick Detail Modal -->
         <div x-show="modalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
             <div @click.away="modalOpen = false" class="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-200 dark:border-zinc-800 relative space-y-4">
-                <button @click="modalOpen = false" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 text-lg">✕</button>
+<button @click="modalOpen = false" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
 
                 <template x-if="selectedMenu">
                     <div class="space-y-4">
@@ -127,16 +127,16 @@
                         <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed" x-text="selectedMenu.description"></p>
 
                         <div class="p-4 rounded-2xl bg-kanca-bg dark:bg-zinc-800 text-xs space-y-1">
-                            <p><strong>Ingredients:</strong> <span x-text="selectedMenu.ingredients || 'Standard House Blend Recipes'"></span></p>
-                            <p><strong>Estimated Calories:</strong> <span x-text="(selectedMenu.calories || '150') + ' kcal'"></span></p>
+                            <p><strong>{{ __('Bahan') }}:</strong> <span x-text="selectedMenu.ingredients || '{{ __('Resep Racikan Rumah Standar') }}'"></span></p>
+                            <p><strong>{{ __('Perkiraan Kalori') }}:</strong> <span x-text="(selectedMenu.calories || '150') + ' kcal'"></span></p>
                         </div>
 
                         <div class="pt-2 flex gap-3">
-                            <button @click="toggleFavorite(selectedMenu.id)" class="flex-1 py-3 rounded-xl border border-rose-500 text-rose-500 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors">
-                                ♥ Add to Favorites
+<button @click="toggleFavorite(selectedMenu.id)" class="flex-1 py-3 rounded-xl border border-rose-500 text-rose-500 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors inline-flex items-center justify-center gap-2">
+                                <i data-lucide="heart" class="w-4 h-4 fill-current"></i> {{ __('Tambah ke Favorit') }}
                             </button>
                             <button @click="modalOpen = false" class="py-3 px-6 rounded-xl bg-kanca-dark text-white font-bold text-xs">
-                                Close
+                                {{ __('Tutup') }}
                             </button>
                         </div>
                     </div>

@@ -18,7 +18,15 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Locale Switch
+|--------------------------------------------------------------------------
+*/
+Route::get('/language/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 
 /*
 |--------------------------------------------------------------------------

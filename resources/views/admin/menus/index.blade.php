@@ -54,7 +54,7 @@
                                 </td>
                                 <td class="p-4 font-semibold text-kanca-teal">{{ $menu->category->name }}</td>
                                 <td class="p-4 font-bold text-gray-900 dark:text-white">IDR {{ number_format($menu->price, 0, ',', '.') }}</td>
-                                <td class="p-4 font-bold text-amber-500">★ {{ number_format($menu->rating, 2) }}</td>
+<td class="p-4 font-bold text-amber-500 inline-flex items-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i> {{ number_format($menu->rating, 2) }}</td>
                                 <td class="p-4">
                                     <form action="{{ route('admin.menus.toggle-availability', $menu->id) }}" method="POST">
                                         @csrf

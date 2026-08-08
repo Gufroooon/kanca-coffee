@@ -1,7 +1,7 @@
 <x-admin-layout>
     <div class="space-y-6">
         <div class="flex items-center gap-2">
-            <a href="{{ route('admin.events.index') }}" class="text-xs font-bold text-gray-500 hover:text-kanca-orange">← Back to Events</a>
+<a href="{{ route('admin.events.index') }}" class="text-xs font-bold text-gray-500 hover:text-kanca-orange inline-flex items-center gap-1"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Events</a>
         </div>
 
         <div>

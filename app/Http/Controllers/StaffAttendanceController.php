@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Repositories\AttendanceRepository;
 use App\Services\AttendanceService;
+use App\Models\Menu;
+use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +28,16 @@ class StaffAttendanceController extends Controller
         $todayAttendance = $this->attendanceRepo->getTodayAttendance($user->id);
         $monthlyHistory = $this->attendanceRepo->getUserMonthlyAttendance($user->id);
 
-        return view('staff.dashboard', compact('user', 'todayAttendance', 'monthlyHistory'));
+        // Fetch available menus for ordering
+        $menus = Menu::where('is_available', true)->orderBy('name', 'asc')->get();
+
+        // Fetch today's orders
+        $todayOrders = Order::with(['items.menu', 'user'])
+            ->whereDate('created_at', Carbon::today())
+            ->latest()
+            ->get();
+
+        return view('staff.dashboard', compact('user', 'todayAttendance', 'monthlyHistory', 'menus', 'todayOrders'));
     }
 
     public function clockIn(Request $request)

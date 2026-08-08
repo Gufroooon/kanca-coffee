@@ -9,6 +9,15 @@ class AttendanceRepository
 {
     public function getTodayAttendance(int $userId)
     {
+        $active = Attendance::where('user_id', $userId)
+            ->whereNull('clock_out')
+            ->latest('id')
+            ->first();
+
+        if ($active) {
+            return $active;
+        }
+
         return Attendance::where('user_id', $userId)
             ->where('date', Carbon::today()->toDateString())
             ->latest('id')

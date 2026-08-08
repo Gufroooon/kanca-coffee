@@ -15,8 +15,10 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffAttendanceController;
+use App\Http\Controllers\StaffOrderController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +51,10 @@ Route::post('/feedback/submit', [ContactController::class, 'submitFeedback'])->n
 Route::post('/favorites/toggle/{menuId}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 
+// Public Order Page (no login required)
+Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+
 /*
 |--------------------------------------------------------------------------
 | Authenticated User Dashboard
@@ -71,6 +77,10 @@ Route::middleware(['auth', 'role:staff,admin'])->prefix('staff')->name('staff.')
     Route::get('/dashboard', [StaffAttendanceController::class, 'index'])->name('dashboard');
     Route::post('/attendance/clock-in', [StaffAttendanceController::class, 'clockIn'])->name('attendance.clock-in');
     Route::post('/attendance/clock-out', [StaffAttendanceController::class, 'clockOut'])->name('attendance.clock-out');
+
+    // Food/Beverage Ordering
+    Route::post('/orders', [StaffOrderController::class, 'store'])->name('orders.store');
+    Route::post('/orders/{order}/status', [StaffOrderController::class, 'updateStatus'])->name('orders.update-status');
 });
 
 /*

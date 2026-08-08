@@ -27,13 +27,33 @@ class AttendanceService
         }
 
         return DB::transaction(function () use ($user, $today, $nowTime, $isLate, $latitude, $longitude, $accuracy, $notes) {
-            $attendance = Attendance::query()->where('user_id', $user->id)->where('date', $today)->latest('id')->lockForUpdate()->first();
-            if ($attendance?->clock_in) {
-                throw new \Exception('You have already clocked in today.');
+            // Check for an ACTIVE session: clocked in but NOT yet clocked out
+            $activeAttendance = Attendance::query()
+                ->where('user_id', $user->id)
+                ->whereNotNull('clock_in')
+                ->whereNull('clock_out')
+                ->latest('id')
+                ->lockForUpdate()
+                ->first();
+
+            if ($activeAttendance) {
+                throw new \Exception('You have already clocked in. Please clock out first.');
             }
 
-            $data = ['clock_in' => $nowTime, 'status' => $isLate ? 'late' : 'present', 'clock_in_location' => $this->formatLocation($latitude, $longitude, $accuracy), 'clock_in_latitude' => $latitude, 'clock_in_longitude' => $longitude, 'clock_in_accuracy' => $accuracy, 'notes' => $notes];
-            $attendance = $attendance ? tap($attendance)->update($data) : Attendance::create(array_merge(['user_id' => $user->id, 'date' => $today], $data));
+            // Always create a fresh record for the new shift (allows multiple shifts per day)
+            $data = [
+                'user_id' => $user->id,
+                'date' => $today,
+                'clock_in' => $nowTime,
+                'status' => $isLate ? 'late' : 'present',
+                'clock_in_location' => $this->formatLocation($latitude, $longitude, $accuracy),
+                'clock_in_latitude' => $latitude,
+                'clock_in_longitude' => $longitude,
+                'clock_in_accuracy' => $accuracy,
+                'notes' => $notes,
+            ];
+
+            $attendance = Attendance::create($data);
 
             AttendanceLog::create(['attendance_id' => $attendance->id, 'action' => 'clock_in', 'note' => "Clock in recorded at {$nowTime}".($isLate ? ' (Marked Late)' : '')]);
 
@@ -43,12 +63,27 @@ class AttendanceService
 
     public function clockOut(User $user, float $latitude, float $longitude, ?float $accuracy = null, ?string $notes = null): Attendance
     {
-        $today = Carbon::today()->toDateString();
         $nowTime = Carbon::now()->format('H:i:s');
 
-        return DB::transaction(function () use ($user, $today, $nowTime, $latitude, $longitude, $accuracy, $notes) {
-            $attendance = Attendance::query()->where('user_id', $user->id)->where('date', $today)->latest('id')->lockForUpdate()->firstOrFail();
-            if (! $attendance->clock_in) {
+        return DB::transaction(function () use ($user, $nowTime, $latitude, $longitude, $accuracy, $notes) {
+            $attendance = Attendance::query()
+                ->where('user_id', $user->id)
+                ->whereNull('clock_out')
+                ->latest('id')
+                ->lockForUpdate()
+                ->first();
+
+            if (!$attendance) {
+                $today = Carbon::today()->toDateString();
+                $attendance = Attendance::query()
+                    ->where('user_id', $user->id)
+                    ->where('date', $today)
+                    ->latest('id')
+                    ->lockForUpdate()
+                    ->first();
+            }
+
+            if (! $attendance) {
                 throw new \Exception('Please clock in before clocking out.');
             }
             if ($attendance->clock_out) {

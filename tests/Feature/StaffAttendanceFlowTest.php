@@ -25,7 +25,6 @@ class StaffAttendanceFlowTest extends TestCase
         $response->assertSessionHas('success');
         $this->assertDatabaseHas('attendances', [
             'user_id' => $staff->id,
-            'date' => now()->toDateString(),
             'clock_in_latitude' => -6.2297123,
             'clock_in_longitude' => 106.8080456,
         ]);

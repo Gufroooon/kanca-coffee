@@ -14,9 +14,21 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
-        $userRole = $request->user()->role ? $request->user()->role->slug : 'user';
+        $userRole = $request->user()->role ? strtolower(trim($request->user()->role->slug)) : 'user';
 
-        if (! in_array($userRole, $roles)) {
+        // Parse and normalize roles (handle comma-separated lists and casing/whitespace)
+        $parsedRoles = [];
+        foreach ($roles as $role) {
+            if (str_contains($role, ',')) {
+                foreach (explode(',', $role) as $r) {
+                    $parsedRoles[] = strtolower(trim($r));
+                }
+            } else {
+                $parsedRoles[] = strtolower(trim($role));
+            }
+        }
+
+        if (! in_array($userRole, $parsedRoles)) {
             if ($userRole === 'admin') {
                 return redirect()->route('admin.dashboard')->with('error', 'Unauthorized access.');
             } elseif ($userRole === 'staff') {

@@ -85,13 +85,18 @@
                             </div>
                         </div>
 
-                        <div class="pt-3 mt-3 flex justify-between items-center border-t border-gray-100 dark:border-zinc-800">
-                            <span class="text-base font-extrabold text-kanca-orange">
+                        <div class="pt-3 mt-3 flex justify-between items-center border-t border-gray-100 dark:border-zinc-800 gap-2">
+                            <span class="text-sm font-extrabold text-kanca-orange">
                                 IDR {{ number_format($menu->price, 0, ',', '.') }}
                             </span>
-                            <button @click="openModal({{ json_encode($menu) }})" class="px-3 py-1.5 rounded-xl bg-kanca-dark text-white text-[11px] font-bold hover:bg-black transition-colors">
-                                {{ __('Detail') }}
-                            </button>
+                            <div class="flex gap-1.5">
+                                <button type="button" @click="addToCart({ id: {{ $menu->id }}, name: '{{ addslashes($menu->name) }}', price: {{ $menu->price }}, image: '{{ $menu->image }}' })" class="px-2.5 py-1.5 rounded-xl bg-kanca-orange hover:bg-kanca-orangeHover text-white text-[11px] font-bold transition-colors" title="{{ __('Tambah ke Keranjang') }}">
+                                    <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button @click="openModal({{ json_encode($menu) }})" class="px-2.5 py-1.5 rounded-xl bg-kanca-dark text-white text-[11px] font-bold hover:bg-black transition-colors">
+                                    {{ __('Detail') }}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @empty
@@ -131,11 +136,14 @@
                             <p><strong>{{ __('Perkiraan Kalori') }}:</strong> <span x-text="(selectedMenu.calories || '150') + ' kcal'"></span></p>
                         </div>
 
-                        <div class="pt-2 flex gap-3">
-<button @click="toggleFavorite(selectedMenu.id)" class="flex-1 py-3 rounded-xl border border-rose-500 text-rose-500 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors inline-flex items-center justify-center gap-2">
-                                <i data-lucide="heart" class="w-4 h-4 fill-current"></i> {{ __('Tambah ke Favorit') }}
+                        <div class="pt-2 flex gap-2">
+                            <button @click="toggleFavorite(selectedMenu.id)" class="flex-1 py-3 rounded-xl border border-rose-500 text-rose-500 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors inline-flex items-center justify-center gap-1.5">
+                                <i data-lucide="heart" class="w-3.5 h-3.5 fill-current"></i> {{ __('Favorit') }}
                             </button>
-                            <button @click="modalOpen = false" class="py-3 px-6 rounded-xl bg-kanca-dark text-white font-bold text-xs">
+                            <button @click="addToCart(selectedMenu); modalOpen = false" class="flex-1 py-3 rounded-xl bg-kanca-orange hover:bg-kanca-orangeHover text-white font-bold text-xs transition-colors inline-flex items-center justify-center gap-1.5">
+                                <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> {{ __('Pesan') }}
+                            </button>
+                            <button @click="modalOpen = false" class="py-3 px-4 rounded-xl bg-kanca-dark text-white font-bold text-xs">
                                 {{ __('Tutup') }}
                             </button>
                         </div>

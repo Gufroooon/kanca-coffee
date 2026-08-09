@@ -29,19 +29,46 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        // Support legacy single-item ordering
+        if ($request->has('menu_id') && !$request->has('items')) {
+            $request->merge([
+                'items' => [
+                    [
+                        'menu_id' => $request->input('menu_id'),
+                        'quantity' => $request->input('quantity', 1),
+                    ]
+                ]
+            ]);
+        }
+
         $validated = $request->validate([
-            'menu_id'       => 'required|exists:menus,id',
-            'quantity'      => 'required|integer|min:1',
             'table_number'  => 'required|integer|between:1,10',
             'customer_name' => 'nullable|string|max:100',
             'customer_note' => 'nullable|string|max:500',
+            'items'         => 'required|array|min:1',
+            'items.*.menu_id' => 'required|exists:menus,id',
+            'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $menu = Menu::findOrFail($validated['menu_id']);
-        $totalPrice = $menu->price * $validated['quantity'];
-
         try {
-            DB::transaction(function () use ($validated, $menu, $totalPrice) {
+            DB::transaction(function () use ($validated) {
+                // Calculate total price
+                $totalPrice = 0;
+                $orderItems = [];
+
+                foreach ($validated['items'] as $itemData) {
+                    $menu = Menu::findOrFail($itemData['menu_id']);
+                    $price = $menu->price;
+                    $subtotal = $price * $itemData['quantity'];
+                    $totalPrice += $subtotal;
+
+                    $orderItems[] = [
+                        'menu_id'  => $menu->id,
+                        'quantity' => $itemData['quantity'],
+                        'price'    => $price,
+                    ];
+                }
+
                 $order = Order::create([
                     'user_id'       => Auth::id() ?? null,
                     'customer_name' => $validated['customer_name'] ?? null,
@@ -51,12 +78,9 @@ class OrderController extends Controller
                     'status'        => 'pending',
                 ]);
 
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'menu_id'  => $menu->id,
-                    'quantity' => $validated['quantity'],
-                    'price'    => $menu->price,
-                ]);
+                foreach ($orderItems as $item) {
+                    $order->items()->create($item);
+                }
             });
 
             return back()->with('success', 'Pesanan berhasil dikirim ke Meja ' . $validated['table_number'] . '! Terima kasih.');

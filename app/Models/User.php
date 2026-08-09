@@ -69,7 +69,7 @@ class User extends Authenticatable
     // Role helper methods
     public function hasRole(string $slug): bool
     {
-        return $this->role && $this->role->slug === $slug;
+        return $this->role && strtolower(trim($this->role->slug)) === strtolower(trim($slug));
     }
 
     public function isAdmin(): bool

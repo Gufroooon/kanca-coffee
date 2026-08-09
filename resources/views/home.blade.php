@@ -128,7 +128,9 @@
                             <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">{{ $menu->description }}</p>
                             <div class="pt-4 flex justify-between items-center border-t border-gray-100 dark:border-zinc-800">
                                 <span class="text-lg font-extrabold text-kanca-orange">IDR {{ number_format($menu->price, 0, ',', '.') }}</span>
-                                <a href="{{ route('menu.index') }}" class="p-2.5 rounded-xl bg-kanca-orange/10 text-kanca-orange hover:bg-kanca-orange hover:text-white transition-colors">+</a>
+                                <button type="button" @click="addToCart({ id: {{ $menu->id }}, name: '{{ addslashes($menu->name) }}', price: {{ $menu->price }}, image: '{{ $menu->image }}' })" class="p-2.5 rounded-xl bg-kanca-orange/10 text-kanca-orange hover:bg-kanca-orange hover:text-white transition-colors flex items-center justify-center font-bold" title="{{ __('Tambah ke Keranjang') }}">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

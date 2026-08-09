@@ -20,7 +20,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-kanca-bg dark:bg-[#1a1a1a] text-kanca-dark dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col justify-between selection:bg-kanca-orange selection:text-white">
+<body x-data="globalCartApp()" class="bg-kanca-bg dark:bg-[#1a1a1a] text-kanca-dark dark:text-gray-100 transition-colors duration-300 min-h-screen flex flex-col justify-between selection:bg-kanca-orange selection:text-white">
 
     <!-- Notification / Announcement Banner -->
     <div x-data="{ open: true }" x-show="open" class="bg-gradient-to-r from-kanca-orange to-kanca-amber text-white text-xs md:text-sm py-2 px-4 text-center font-medium shadow-sm relative flex justify-between items-center z-50">
@@ -230,6 +230,222 @@
             </div>
         </div>
     </footer>
+
+    <!-- Global Floating Cart Button -->
+    <div class="fixed bottom-6 right-6 z-40" x-show="totalItems > 0" x-transition x-cloak>
+        <button @click="cartOpen = true" class="bg-gradient-to-r from-kanca-orange to-kanca-amber hover:scale-105 transition-all text-white p-4 rounded-full shadow-2xl flex items-center justify-center relative group animate-bounce" title="{{ __('Lihat Keranjang') }}">
+            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+            <span class="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-black w-6 h-6 rounded-full flex items-center justify-center" x-text="totalItems">0</span>
+        </button>
+    </div>
+
+    <!-- Cart Drawer Backdrop -->
+    <div x-show="cartOpen" x-transition.opacity @click="cartOpen = false" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" x-cloak></div>
+
+    <!-- Cart Drawer Panel -->
+    <div x-show="cartOpen" 
+         x-transition:enter="transition ease-out duration-300 transform" 
+         x-transition:enter-start="translate-x-full" 
+         x-transition:enter-end="translate-x-0" 
+         x-transition:leave="transition ease-in duration-200 transform" 
+         x-transition:leave-start="translate-x-0" 
+         x-transition:leave-end="translate-x-full" 
+         class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-zinc-950 shadow-2xl z-50 border-l border-gray-100 dark:border-zinc-800 flex flex-col justify-between overflow-hidden" 
+         x-cloak>
+        
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center bg-gray-50 dark:bg-zinc-900">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-kanca-orange"></i>
+                <h3 class="font-extrabold text-base text-gray-900 dark:text-white">{{ __('Keranjang Pesanan') }}</h3>
+            </div>
+            <button @click="cartOpen = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-white p-1 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Body (Scrollable items) -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Empty state -->
+            <div x-show="cart.length === 0" class="h-full flex flex-col items-center justify-center text-center space-y-3 py-10">
+                <div class="w-16 h-16 rounded-full bg-orange-50 dark:bg-zinc-900 flex items-center justify-center text-kanca-orange">
+                    <i data-lucide="coffee" class="w-8 h-8"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-800 dark:text-gray-200 text-sm">{{ __('Keranjang belanja kosong') }}</h4>
+                    <p class="text-xs text-gray-400 mt-1">{{ __('Mulai tambahkan menu favorit kamu ke keranjang.') }}</p>
+                </div>
+            </div>
+
+            <!-- Cart Items List -->
+            <div x-show="cart.length > 0" class="space-y-4 divide-y divide-gray-100 dark:divide-zinc-800">
+                <template x-for="(item, index) in cart" :key="item.menu_id">
+                    <div class="flex gap-4 pt-4 first:pt-0 items-center">
+                        <img :src="item.image" :alt="item.name" class="w-16 h-16 rounded-xl object-cover border border-gray-100 dark:border-zinc-850 shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <span class="text-xs font-extrabold text-gray-900 dark:text-white block truncate" x-text="item.name"></span>
+                            <span class="text-xs text-kanca-orange font-bold block mt-0.5" x-text="formatPrice(item.price)"></span>
+                            
+                            <!-- Quantity Controls -->
+                            <div class="flex items-center gap-2 mt-2">
+                                <button type="button" @click="updateQuantity(item.menu_id, -1)" class="w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-850 dark:text-white transition-colors flex items-center justify-center font-bold text-xs">-</button>
+                                <span class="text-xs font-bold w-6 text-center text-gray-900 dark:text-white" x-text="item.quantity">1</span>
+                                <button type="button" @click="updateQuantity(item.menu_id, 1)" class="w-6 h-6 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-855 dark:text-white transition-colors flex items-center justify-center font-bold text-xs">+</button>
+                            </div>
+                        </div>
+                        <button type="button" @click="removeFromCart(item.menu_id)" class="text-rose-500 hover:text-rose-700 p-2 rounded-full hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Footer Form & Details -->
+        <div x-show="cart.length > 0" class="p-6 border-t border-gray-100 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/60 space-y-3">
+            
+            <!-- Quick Add Dropdown inside Cart -->
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Tambah Menu Lainnya') }}</label>
+                <select @change="if ($event.target.value) { addToCart(menus.find(m => m.id == $event.target.value)); $event.target.value = ''; }" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white focus:ring-1 focus:ring-kanca-orange focus:outline-none transition-all">
+                    <option value="">+ {{ __('Pilih item tambahan...') }}</option>
+                    <template x-for="menu in menus" :key="menu.id">
+                        <option :value="menu.id" x-text="menu.name + ' — ' + formatPrice(menu.price)"></option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- Table Number Dropdown -->
+            <div class="space-y-1">
+                <label for="cart_table_number" class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Nomor Meja') }}</label>
+                <select id="cart_table_number" x-model="tableNumber" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white focus:ring-1 focus:ring-kanca-orange focus:outline-none transition-all">
+                    @for ($i = 1; $i <= 10; $i++)
+                        <option value="{{ $i }}">{{ __('Meja') }} {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <!-- Customer Name -->
+            <div class="space-y-1">
+                <label for="cart_customer_name" class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Nama Kamu') }}</label>
+                <input type="text" id="cart_customer_name" x-model="customerName" placeholder="{{ __('Nama pemesan...') }}" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white focus:ring-1 focus:ring-kanca-orange focus:outline-none transition-all">
+            </div>
+
+            <!-- Customer Note -->
+            <div class="space-y-1">
+                <label for="cart_customer_note" class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Catatan Pesanan (Opsional)') }}</label>
+                <input type="text" id="cart_customer_note" x-model="customerNote" placeholder="{{ __('mis. Less sugar, hot, extra shot...') }}" class="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-xs dark:bg-zinc-800 dark:text-white focus:ring-1 focus:ring-kanca-orange focus:outline-none transition-all">
+            </div>
+
+            <!-- Total Price -->
+            <div class="flex justify-between items-center py-2 border-t border-gray-200/50 dark:border-zinc-800">
+                <span class="text-xs font-bold text-gray-500">{{ __('Total Pembayaran') }}</span>
+                <span class="text-lg font-black text-kanca-orange" x-text="formatPrice(totalPrice)">Rp 0</span>
+            </div>
+
+            <!-- Submit Form -->
+            <form action="{{ route('order.store') }}" method="POST" @submit="clearCart()">
+                @csrf
+                <input type="hidden" name="table_number" :value="tableNumber">
+                <input type="hidden" name="customer_name" :value="customerName">
+                <input type="hidden" name="customer_note" :value="customerNote">
+                <template x-for="(item, index) in cart" :key="item.menu_id">
+                    <div>
+                        <input type="hidden" :name="'items['+index+'][menu_id]'" :value="item.menu_id">
+                        <input type="hidden" :name="'items['+index+'][quantity]'" :value="item.quantity">
+                    </div>
+                </template>
+                <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-brand text-white font-extrabold text-xs hover:opacity-95 transition-all shadow-xl shadow-kanca-orange/30 flex items-center justify-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    {{ __('KIRIM PESANAN KE DAPUR') }}
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function globalCartApp() {
+            return {
+                cart: [],
+                cartOpen: false,
+                tableNumber: 1,
+                customerName: '',
+                customerNote: '',
+                menus: @json($globalMenus ?? []),
+                
+                init() {
+                    // Load cart from localStorage
+                    const savedCart = localStorage.getItem('kanca_cart');
+                    if (savedCart) {
+                        try {
+                            this.cart = JSON.parse(savedCart);
+                        } catch (e) {
+                            console.error('Failed to parse cart', e);
+                        }
+                    }
+                    
+                    // Sync cart to localStorage
+                    this.$watch('cart', (val) => {
+                        localStorage.setItem('kanca_cart', JSON.stringify(val));
+                    }, { deep: true });
+                },
+                
+                addToCart(menu) {
+                    let item = this.cart.find(i => i.menu_id === menu.id);
+                    if (item) {
+                        item.quantity++;
+                    } else {
+                        this.cart.push({
+                            menu_id: menu.id,
+                            name: menu.name,
+                            price: menu.price,
+                            image: menu.image || '',
+                            quantity: 1
+                        });
+                    }
+                    this.cartOpen = true;
+                    
+                    // Trigger Lucide icons refresh
+                    this.$nextTick(() => {
+                        if (window.lucide) {
+                            window.lucide.createIcons();
+                        }
+                    });
+                },
+                
+                removeFromCart(menuId) {
+                    this.cart = this.cart.filter(i => i.menu_id !== menuId);
+                },
+                
+                updateQuantity(menuId, amount) {
+                    let item = this.cart.find(i => i.menu_id === menuId);
+                    if (item) {
+                        item.quantity += amount;
+                        if (item.quantity <= 0) {
+                            this.removeFromCart(menuId);
+                        }
+                    }
+                },
+                
+                clearCart() {
+                    this.cart = [];
+                    localStorage.removeItem('kanca_cart');
+                },
+                
+                get totalPrice() {
+                    return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                },
+                
+                get totalItems() {
+                    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                },
+                
+                formatPrice(value) {
+                    return 'Rp ' + Number(value).toLocaleString('id-ID');
+                }
+            }
+        }
+    </script>
 
     <script>
         lucide.createIcons();

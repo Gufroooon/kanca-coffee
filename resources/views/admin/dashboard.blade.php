@@ -2,7 +2,7 @@
     <div class="space-y-8">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div><p class="text-sm text-kanca-orange font-bold uppercase tracking-wider">Operational Overview</p><h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Dashboard Cafe</h2><p class="text-sm text-gray-500">Ringkasan inventory dan keuangan per {{ now()->format('d M Y') }}.</p></div>
-            <div class="flex gap-2"><a href="{{ route('admin.ingredients.index') }}" class="px-3 py-2 rounded-xl bg-kanca-orange text-white text-xs font-bold">Kelola Inventory</a><a href="{{ route('admin.finance.summary') }}" class="px-3 py-2 rounded-xl bg-kanca-teal text-white text-xs font-bold">Lihat Keuangan</a></div>
+            <div class="flex flex-wrap gap-2"><a href="{{ route('admin.ingredients.index') }}" class="px-3 py-2 rounded-xl bg-kanca-orange text-white text-xs font-bold">Kelola Bahan</a><a href="{{ route('admin.cashflows.index', 'income') }}" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold">Tambah Pemasukan</a><a href="{{ route('admin.cashflows.index', 'expense') }}" class="px-3 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold">Tambah Pengeluaran</a></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-gray-100 dark:border-zinc-800"><p class="text-xs uppercase font-bold text-gray-500">Total Bahan</p><p class="text-2xl font-extrabold mt-2">{{ $totalIngredients }}</p><p class="text-xs text-gray-400 mt-1">{{ number_format((float) $totalStock, 3, ',', '.') }} unit stok tersedia</p></div>

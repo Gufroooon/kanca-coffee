@@ -61,8 +61,11 @@ class AdminCashflowController extends Controller
         $daily = Cashflow::select('transaction_date', 'type', DB::raw('SUM(amount) as total'))
             ->whereBetween('transaction_date', [$from, $to])->groupBy('transaction_date', 'type')->orderBy('transaction_date')->get();
         $chart = collect();
-        foreach ($daily as $row) $chart->put($row->transaction_date.'|'.$row->type, (float) $row->total);
-        $dates = collect($daily->pluck('transaction_date')->unique()->values());
+        foreach ($daily as $row) $chart->put($row->transaction_date->toDateString().'|'.$row->type, (float) $row->total);
+        $dates = collect($daily->pluck('transaction_date'))
+            ->map(fn ($date) => $date->toDateString())
+            ->unique()
+            ->values();
         return view('admin.finance.summary', compact('from', 'to', 'income', 'expense', 'transactions', 'dates', 'chart'));
     }
 

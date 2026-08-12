@@ -14,9 +14,7 @@
     <meta property="og:description" content="Situs coffee shop yang juga merupakan platform komunitas tempat pengunjung menemukan menu, mengikuti event, dan terhubung dengan sesama.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=1200&q=80">
 
-    <!-- AlpineJS & Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>

@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+[x-cloak] {
+  display: none !important;
+}
+
 :root {
   --color-primary: #EB5724;
   --color-primary-hover: #d44716;

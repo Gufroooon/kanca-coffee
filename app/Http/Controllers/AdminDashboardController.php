@@ -46,6 +46,7 @@ class AdminDashboardController extends Controller
         $financialTrend = Cashflow::select('transaction_date', 'type', DB::raw('SUM(amount) as total'))
             ->whereDate('transaction_date', '>=', $today->copy()->subDays(6))
             ->groupBy('transaction_date', 'type')->orderBy('transaction_date')->get();
+        $financialTrend = $financialTrend->keyBy(fn ($row) => $row->transaction_date->toDateString().'|'.$row->type);
         $financialDates = collect();
         $incomeTrend = collect();
         $expenseTrend = collect();
@@ -53,8 +54,8 @@ class AdminDashboardController extends Controller
             $date = $today->copy()->subDays($i);
             $key = $date->toDateString();
             $financialDates->push($date->format('d M'));
-            $incomeTrend->push((float) ($financialTrend->first(fn ($row) => $row->transaction_date === $key && $row->type === 'income')->total ?? 0));
-            $expenseTrend->push((float) ($financialTrend->first(fn ($row) => $row->transaction_date === $key && $row->type === 'expense')->total ?? 0));
+            $incomeTrend->push((float) ($financialTrend->get($key.'|income')?->total ?? 0));
+            $expenseTrend->push((float) ($financialTrend->get($key.'|expense')?->total ?? 0));
         }
 
         // Chart Data (Last 7 days attendance)

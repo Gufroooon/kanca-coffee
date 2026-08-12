@@ -8,7 +8,6 @@
 <title>{{ __('Portal Kehadiran Staff') }} - {{ config('app.name', 'Kanca Coffee') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-50 dark:bg-zinc-950 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col justify-between">

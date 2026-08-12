@@ -32,7 +32,7 @@
                             <tr>
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
-                                        <img src="{{ $staff->avatar }}" alt="{{ $staff->name }}" class="w-11 h-11 rounded-xl object-cover">
+                                        <img src="{{ asset('images/kanca-logo.jpg') }}" alt="{{ $staff->name }}" class="w-11 h-11 rounded-xl object-cover">
                                         <div>
                                             <p class="font-bold text-sm text-gray-900 dark:text-white">{{ $staff->name }}</p>
                                             <p class="text-gray-500">{{ $staff->email }}</p>

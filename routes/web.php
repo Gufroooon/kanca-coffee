@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminAttendanceController;
+use App\Http\Controllers\AdminCashflowController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminFeedbackController;
 use App\Http\Controllers\AdminMenuController;
+use App\Http\Controllers\AdminInventoryController;
+use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminSettingController;
 use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\AdminUserController;
@@ -91,6 +94,29 @@ Route::middleware(['auth', 'role:staff,admin'])->prefix('staff')->name('staff.')
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Admin Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // Inventory & raw materials
+    Route::get('ingredients', [AdminInventoryController::class, 'ingredients'])->name('ingredients.index');
+    Route::post('ingredients', [AdminInventoryController::class, 'storeIngredient'])->name('ingredients.store');
+    Route::put('ingredients/{ingredient}', [AdminInventoryController::class, 'updateIngredient'])->name('ingredients.update');
+    Route::delete('ingredients/{ingredient}', [AdminInventoryController::class, 'destroyIngredient'])->name('ingredients.destroy');
+    Route::get('mixed-ingredients', [AdminInventoryController::class, 'mixed'])->name('mixed.index');
+    Route::post('mixed-ingredients', [AdminInventoryController::class, 'storeMixed'])->name('mixed.store');
+    Route::put('mixed-ingredients/{mixedIngredient}', [AdminInventoryController::class, 'updateMixed'])->name('mixed.update');
+    Route::delete('mixed-ingredients/{mixedIngredient}', [AdminInventoryController::class, 'destroyMixed'])->name('mixed.destroy');
+    Route::post('mixed-ingredients/{mixedIngredient}/produce', [AdminInventoryController::class, 'produceMixed'])->name('mixed.produce');
+    Route::get('inventory-logs', [AdminInventoryController::class, 'logs'])->name('inventory.logs');
+    Route::post('inventory-logs', [AdminInventoryController::class, 'storeLog'])->name('inventory.logs.store');
+    Route::get('inventory-logs/export', [AdminInventoryController::class, 'exportLogs'])->name('inventory.logs.export');
+
+    // Finance
+    Route::get('cashflows/{type}', [AdminCashflowController::class, 'index'])->whereIn('type', ['income', 'expense'])->name('cashflows.index');
+    Route::post('cashflows/{type}', [AdminCashflowController::class, 'store'])->whereIn('type', ['income', 'expense'])->name('cashflows.store');
+    Route::put('cashflows/{cashflow}', [AdminCashflowController::class, 'update'])->name('cashflows.update');
+    Route::delete('cashflows/{cashflow}', [AdminCashflowController::class, 'destroy'])->name('cashflows.destroy');
+    Route::get('finance', [AdminCashflowController::class, 'summary'])->name('finance.summary');
+    Route::get('finance/export', [AdminCashflowController::class, 'export'])->name('finance.export');
+    Route::get('reports', [AdminReportController::class, 'index'])->name('reports.index');
 
     // Menu Management
     Route::resource('menus', AdminMenuController::class)->except(['show']);

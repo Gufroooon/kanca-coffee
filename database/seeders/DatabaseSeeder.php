@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             GallerySeeder::class,
             SettingSeeder::class,
             AttendanceSeeder::class,
+            AdminOperationsSeeder::class,
         ]);
     }
 }

@@ -41,6 +41,29 @@
                     <span x-show="sidebarOpen" class="whitespace-nowrap">{{ __('Katalog Menu') }}</span>
                 </a>
 
+                <div class="pt-4 pb-1 px-4 text-[10px] uppercase tracking-widest text-zinc-500 font-bold" x-show="sidebarOpen">Manajemen Cafe</div>
+                <a href="{{ route('admin.ingredients.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.ingredients.*') ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="package" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Bahan Baku</span>
+                </a>
+                <a href="{{ route('admin.mixed.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.mixed.*') ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="blend" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Mixed Ingredients</span>
+                </a>
+                <a href="{{ route('admin.inventory.logs') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.inventory.*') ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="clipboard-list" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Inventory Harian</span>
+                </a>
+                <a href="{{ route('admin.cashflows.index', 'income') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.cashflows.*') && request()->route('type') === 'income' ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="trending-up" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Pemasukan</span>
+                </a>
+                <a href="{{ route('admin.cashflows.index', 'expense') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.cashflows.*') && request()->route('type') === 'expense' ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="trending-down" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Pengeluaran</span>
+                </a>
+                <a href="{{ route('admin.finance.summary') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.finance.*') ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Rekap Keuangan</span>
+                </a>
+                <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.reports.*') ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
+                    <i data-lucide="file-bar-chart" class="w-5 h-5 flex-shrink-0"></i><span x-show="sidebarOpen" class="whitespace-nowrap">Laporan</span>
+                </a>
+
                 <a href="{{ route('admin.events.index') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('admin.events.*') ? 'bg-gradient-to-r from-kanca-orange to-kanca-amber text-white shadow-lg' : 'text-gray-400 hover:bg-zinc-800 hover:text-white' }}">
                     <i data-lucide="calendar" class="w-5 h-5 flex-shrink-0"></i>
                     <span x-show="sidebarOpen" class="whitespace-nowrap">{{ __('Event & Kuota') }}</span>

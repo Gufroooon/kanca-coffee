@@ -1,5 +1,19 @@
 <x-admin-layout>
     <div class="space-y-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div><p class="text-sm text-kanca-orange font-bold uppercase tracking-wider">Operational Overview</p><h2 class="text-2xl font-extrabold text-gray-900 dark:text-white">Dashboard Cafe</h2><p class="text-sm text-gray-500">Ringkasan inventory dan keuangan per {{ now()->format('d M Y') }}.</p></div>
+            <div class="flex gap-2"><a href="{{ route('admin.ingredients.index') }}" class="px-3 py-2 rounded-xl bg-kanca-orange text-white text-xs font-bold">Kelola Inventory</a><a href="{{ route('admin.finance.summary') }}" class="px-3 py-2 rounded-xl bg-kanca-teal text-white text-xs font-bold">Lihat Keuangan</a></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-gray-100 dark:border-zinc-800"><p class="text-xs uppercase font-bold text-gray-500">Total Bahan</p><p class="text-2xl font-extrabold mt-2">{{ $totalIngredients }}</p><p class="text-xs text-gray-400 mt-1">{{ number_format((float) $totalStock, 3, ',', '.') }} unit stok tersedia</p></div>
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-gray-100 dark:border-zinc-800"><p class="text-xs uppercase font-bold text-gray-500">Usage Hari Ini</p><p class="text-2xl font-extrabold mt-2 text-kanca-orange">{{ number_format((float) $todayUsage, 3, ',', '.') }}</p><p class="text-xs text-gray-400 mt-1">{{ $todayInventoryLogs }} inventory log</p></div>
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-gray-100 dark:border-zinc-800"><p class="text-xs uppercase font-bold text-gray-500">Pemasukan Hari Ini</p><p class="text-2xl font-extrabold mt-2 text-emerald-600">Rp {{ number_format((float) $todayIncome, 0, ',', '.') }}</p><p class="text-xs text-gray-400 mt-1">{{ $todayTransactions }} transaksi</p></div>
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl p-5 border border-gray-100 dark:border-zinc-800"><p class="text-xs uppercase font-bold text-gray-500">Profit Hari Ini</p><p class="text-2xl font-extrabold mt-2 {{ $todayIncome - $todayExpense >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">Rp {{ number_format((float) ($todayIncome - $todayExpense), 0, ',', '.') }}</p><p class="text-xs text-gray-400 mt-1">Pengeluaran Rp {{ number_format((float) $todayExpense, 0, ',', '.') }}</p></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800"><div class="flex justify-between items-center mb-4"><div><h3 class="font-bold">Trend Keuangan 7 Hari</h3><p class="text-xs text-gray-400">Income vs expense berdasarkan database</p></div><a href="{{ route('admin.finance.summary') }}" class="text-xs font-bold text-kanca-teal">Detail</a></div><div class="h-64"><canvas id="financeChart"></canvas></div></div>
+            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-gray-100 dark:border-zinc-800"><div class="flex justify-between items-center mb-4"><h3 class="font-bold">Low Stock Alert</h3><a href="{{ route('admin.ingredients.index', ['status' => 'active']) }}" class="text-xs font-bold text-kanca-orange">Inventory</a></div><div class="space-y-3">@forelse($lowStockIngredients as $ingredient)<div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20"><div><p class="font-bold text-sm">{{ $ingredient->name }}</p><p class="text-xs text-gray-500">Min. {{ $ingredient->minimum_stock }} {{ $ingredient->unit }}</p></div><span class="text-xs font-extrabold text-rose-600">{{ $ingredient->current_stock }} {{ $ingredient->unit }}</span></div>@empty<p class="text-sm text-gray-500">Semua stok berada di atas batas minimum.</p>@endforelse</div></div>
+        </div>
         <!-- Top Quick Metrics Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Metric 1: Total Menus -->
@@ -174,6 +188,8 @@
                     plugins: { legend: { display: false } }
                 }
             });
+            const finance = document.getElementById('financeChart');
+            if (finance) new Chart(finance.getContext('2d'), { type: 'bar', data: { labels: @json($financialDates), datasets: [{ label: 'Income', data: @json($incomeTrend), backgroundColor: '#28A096' }, { label: 'Expense', data: @json($expenseTrend), backgroundColor: '#EB5724' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } } });
         });
     </script>
 </x-admin-layout>

@@ -18,12 +18,12 @@
         <div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-30 lg:hidden" aria-hidden="true"></div>
         <aside :class="sidebarOpen ? 'translate-x-0 lg:w-64' : '-translate-x-full lg:translate-x-0 lg:w-20'" class="fixed inset-y-0 left-0 w-64 bg-zinc-900 text-white transition-all duration-300 flex flex-col z-40 shadow-xl lg:static lg:h-screen lg:sticky lg:top-0">
             <!-- Brand Header -->
-            <div class="h-20 flex items-center justify-between px-5 border-b border-zinc-800">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 overflow-hidden">
+            <div :class="sidebarOpen ? 'flex-row px-5' : 'flex-col gap-1 px-2 py-2'" class="h-20 flex items-center justify-between border-b border-zinc-800">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 overflow-hidden shrink-0">
                     <x-logo class="w-10 h-10" rounded="rounded-xl" />
                     <span x-show="sidebarOpen" class="font-extrabold text-lg tracking-tight whitespace-nowrap">KANCA <span class="text-kanca-orange">ADMIN</span></span>
                 </a>
-                    <button @click="sidebarOpen = window.innerWidth < 1024 ? false : !sidebarOpen" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-zinc-800" aria-label="Close menu">
+                    <button @click="sidebarOpen = window.innerWidth < 1024 ? false : !sidebarOpen" class="text-gray-400 hover:text-white p-2 rounded-lg hover:bg-zinc-800 shrink-0" :aria-label="sidebarOpen ? 'Close menu' : 'Open menu'">
                         <i data-lucide="chevron-left" x-show="sidebarOpen" class="w-4 h-4"></i>
                         <i data-lucide="chevron-right" x-show="!sidebarOpen" class="w-4 h-4"></i>
                     </button>

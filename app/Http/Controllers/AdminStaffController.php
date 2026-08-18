@@ -62,7 +62,7 @@ class AdminStaffController extends Controller
             'shift' => $validated['shift'],
             'password' => Hash::make($validated['password']),
             'is_active' => true,
-            'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+            'avatar' => '/images/kanca-logo.jpg',
         ]);
 
         return redirect()->route('admin.staff.index')->with('success', 'New staff member registered successfully!');

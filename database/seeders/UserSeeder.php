@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'role_id' => $adminRole->id,
                 'name' => 'Kanca Admin Master',
                 'phone' => '081234567890',
-                'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+                'avatar' => '/images/kanca-logo.jpg',
                 'shift' => 'All Shifts',
                 'is_active' => true,
                 'password' => Hash::make('password'),

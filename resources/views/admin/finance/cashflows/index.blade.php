@@ -82,7 +82,7 @@
                         <input name="source" :value="edit?.source" placeholder="Sumber pemasukan" class="w-full rounded-xl border-gray-200 dark:border-zinc-700 dark:bg-zinc-800">
                     @endif
                     <textarea name="description" x-text="edit?.description || ''" placeholder="Deskripsi / catatan" class="w-full rounded-xl border-gray-200 dark:border-zinc-700 dark:bg-zinc-800"></textarea>
-                    <button class="w-full py-3 rounded-xl bg-kanca-teal text-white font-bold">Simpan Perubahan</button>
+                    <div class="flex gap-3"><button type="submit" class="flex-1 py-3 rounded-xl bg-kanca-teal text-white font-bold">Simpan Perubahan</button><button type="submit" class="flex-1 py-3 rounded-xl bg-kanca-orange text-white font-bold hover:bg-kanca-orangeHover">Selesai</button></div>
                 </form>
             </div>
         </div>

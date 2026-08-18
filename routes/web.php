@@ -109,14 +109,38 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('inventory-logs', [AdminInventoryController::class, 'storeLog'])->name('inventory.logs.store');
     Route::get('inventory-logs/export', [AdminInventoryController::class, 'exportLogs'])->name('inventory.logs.export');
 
-    // Finance
+    // Finance V2 & Income / Expense / Journal / Reports
+    Route::get('finance/income-dashboard', [\App\Http\Controllers\AdminFinancialDashboardController::class, 'incomeDashboard'])->name('finance.income.dashboard');
+    Route::get('finance/expense-dashboard', [\App\Http\Controllers\AdminFinancialDashboardController::class, 'expenseDashboard'])->name('finance.expense.dashboard');
+
+    Route::get('income/database', [\App\Http\Controllers\AdminIncomeController::class, 'index'])->name('income.index');
+    Route::post('income/cash', [\App\Http\Controllers\AdminIncomeController::class, 'storeCash'])->name('income.store-cash');
+    Route::post('income/transfer', [\App\Http\Controllers\AdminIncomeController::class, 'storeTransfer'])->name('income.store-transfer');
+    Route::post('income/qris-cetak', [\App\Http\Controllers\AdminIncomeController::class, 'storeQrisCetak'])->name('income.store-qris-cetak');
+    Route::post('income/gobiz', [\App\Http\Controllers\AdminIncomeController::class, 'storeGobiz'])->name('income.store-gobiz');
+    Route::post('income/import-spreadsheet', [\App\Http\Controllers\AdminIncomeController::class, 'importSpreadsheet'])->name('income.import-spreadsheet');
+
+    Route::resource('expenses', \App\Http\Controllers\AdminExpenseController::class);
+    Route::post('expenses/{expense}/toggle-status', [\App\Http\Controllers\AdminExpenseController::class, 'toggleStatus'])->name('expenses.toggle-status');
+    Route::get('expenses/{expense}/invoice', [\App\Http\Controllers\AdminExpenseController::class, 'downloadInvoice'])->name('expenses.download-invoice');
+
+    Route::get('journal', [\App\Http\Controllers\AdminJournalController::class, 'index'])->name('finance.journal.index');
+    Route::get('master-finance', [\App\Http\Controllers\AdminMasterFinanceController::class, 'index'])->name('master-finance.index');
+    Route::post('master-finance/sub-account', [\App\Http\Controllers\AdminMasterFinanceController::class, 'storeSubAccount'])->name('master-finance.store-sub-account');
+    Route::post('master-finance/category', [\App\Http\Controllers\AdminMasterFinanceController::class, 'storeCategory'])->name('master-finance.store-category');
+    Route::post('master-finance/supplier', [\App\Http\Controllers\AdminMasterFinanceController::class, 'storeSupplier'])->name('master-finance.store-supplier');
+
+    // Legacy Cashflow route fallback
     Route::get('cashflows/{type}', [AdminCashflowController::class, 'index'])->whereIn('type', ['income', 'expense'])->name('cashflows.index');
     Route::post('cashflows/{type}', [AdminCashflowController::class, 'store'])->whereIn('type', ['income', 'expense'])->name('cashflows.store');
     Route::put('cashflows/{cashflow}', [AdminCashflowController::class, 'update'])->name('cashflows.update');
     Route::delete('cashflows/{cashflow}', [AdminCashflowController::class, 'destroy'])->name('cashflows.destroy');
-    Route::get('finance', [AdminCashflowController::class, 'summary'])->name('finance.summary');
-    Route::get('finance/export', [AdminCashflowController::class, 'export'])->name('finance.export');
+    Route::get('finance', [\App\Http\Controllers\AdminFinancialDashboardController::class, 'incomeDashboard'])->name('finance.summary');
+    Route::get('finance/export', [AdminReportController::class, 'exportExcel'])->name('finance.export');
+
     Route::get('reports', [AdminReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export/pdf', [AdminReportController::class, 'exportPdf'])->name('reports.export.pdf');
+    Route::get('reports/export/excel', [AdminReportController::class, 'exportExcel'])->name('reports.export.excel');
 
     // Menu Management
     Route::resource('menus', AdminMenuController::class)->except(['show']);
